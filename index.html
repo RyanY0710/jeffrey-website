@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jeffrey on Ice</title>
+<meta name="description" content="Jeffrey — hockey player, athlete, video editor and creator from Edmonton, living in Vancouver.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  /* ============ COLOUR + TYPE TOKENS ============ */
+  :root {
+    color-scheme: dark;
+    --night: #070d1a;      /* page background: rink at night */
+    --deep: #0d1830;       /* raised panels */
+    --line: #1f3358;       /* borders, rink lines */
+    --ice: #7fd3ff;        /* main accent: ice blue */
+    --glacier: #3a8dde;    /* darker blue for gradients */
+    --frost: #eaf6ff;      /* headings: snow white */
+    --text: #b9c9e0;       /* body text */
+    --muted: #6f84a6;      /* captions */
+    --goal: #ff4d5e;       /* tiny hockey-red detail */
+
+    --display: "Chakra Petch", "Segoe UI", system-ui, sans-serif;
+    --body: "Barlow", "Segoe UI", system-ui, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--night);
+    color: var(--text);
+    font: 400 17px/1.65 var(--body);
+    -webkit-font-smoothing: antialiased;
+  }
+  img { max-width: 100%; display: block; }
+  a { color: var(--ice); }
+  h1, h2, h3 { font-family: var(--display); color: var(--frost); line-height: 1.1; text-wrap: balance; margin: 0; }
+
+  .wrap { max-width: 1120px; margin: 0 auto; padding-inline: 20px; }
+
+  /* ============ TOP MENU ============ */
+  .nav {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50;
+    background: rgba(7, 13, 26, 0.82);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .logo {
+    font-family: var(--display); font-weight: 700; font-size: 20px; letter-spacing: 0.06em;
+    color: var(--frost); text-decoration: none;
+  }
+  .logo span { color: var(--ice); }
+  .menu { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; }
+  .menu a {
+    display: block; padding: 8px 14px; border-radius: 6px;
+    font-family: var(--display); font-weight: 600; font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text); text-decoration: none; transition: color .2s, background .2s;
+  }
+  .menu a:hover, .menu a.active { color: var(--night); background: var(--ice); }
+  .menu-btn {
+    display: none; background: none; border: 1px solid var(--line); border-radius: 6px;
+    color: var(--frost); font: 600 14px var(--display); letter-spacing: 0.08em; padding: 8px 12px; cursor: pointer;
+  }
+
+  /* ============ HERO ============ */
+  .hero { position: relative; overflow: hidden; padding-block: 96px 88px; border-bottom: 1px solid var(--line); }
+  #snow { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  /* hockey rink markings drawn in CSS */
+  .rink { position: absolute; inset: 0; pointer-events: none; opacity: 0.55; }
+  .rink::before { /* centre red line */
+    content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 3px; background: var(--goal); opacity: .35;
+  }
+  .rink::after { /* centre ice circle */
+    content: ""; position: absolute; left: 50%; top: 50%; width: 420px; height: 420px; max-width: 90vw; max-height: 90vw;
+    transform: translate(-50%, -50%); border: 2px solid var(--glacier); border-radius: 50%; opacity: .35;
+  }
+  .hero .wrap { position: relative; }
+  .tag {
+    font-family: var(--mono); font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ice);
+  }
+  .hero h1 {
+    font-size: clamp(56px, 12vw, 132px); font-weight: 700; letter-spacing: -0.01em; margin-top: 14px;
+    background: linear-gradient(180deg, var(--frost) 30%, var(--ice) 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .hero .lead { font-size: clamp(19px, 2.4vw, 24px); color: var(--frost); max-width: 34ch; margin: 18px 0 0; font-weight: 500; }
+  .hero .sub { max-width: 58ch; margin: 14px 0 0; }
+  .cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+
+  /* ============ BUTTONS (with ice-shine effect) ============ */
+  .btn {
+    position: relative; overflow: hidden; display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 24px; border-radius: 8px; text-decoration: none; cursor: pointer;
+    font: 600 15px var(--display); letter-spacing: 0.08em; text-transform: uppercase;
+    transition: transform .2s, box-shadow .25s, background .25s;
+  }
+  .btn-primary { background: var(--ice); color: var(--night); border: 1px solid var(--ice); }
+  .btn-ghost { background: transparent; color: var(--frost); border: 1px solid var(--line); }
+  .btn::after { /* shine sweep */
+    content: ""; position: absolute; top: 0; left: -120%; width: 60%; height: 100%;
+    background: linear-gradient(100deg, transparent, rgba(255,255,255,.55), transparent);
+    transform: skewX(-20deg); transition: left .55s ease;
+  }
+  .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px -8px rgba(127, 211, 255, .55); }
+  .btn:hover::after { left: 140%; }
+  .btn-ghost:hover { border-color: var(--ice); }
+  .btn:active { transform: translateY(0); }
+  :focus-visible { outline: 2px solid var(--ice); outline-offset: 3px; }
+
+  /* quick-facts strip under the hero, styled like a player card */
+  .facts {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; margin-top: 56px;
+    background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
+  }
+  .fact { background: var(--deep); padding: 16px 18px; }
+  .fact dt { font-family: var(--mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .fact dd { margin: 4px 0 0; font-family: var(--display); font-weight: 600; font-size: 18px; color: var(--frost); }
+
+  /* ============ SECTIONS ============ */
+  section { padding-block: 88px; border-bottom: 1px solid var(--line); scroll-margin-top: 64px; }
+  .head { display: grid; gap: 12px; margin-bottom: 40px; max-width: 64ch; }
+  .head h2 { font-size: clamp(34px, 5vw, 52px); }
+  .head p { margin: 0; }
+
+  /* Story timeline (a real sequence, so it is numbered by year of life) */
+  .timeline { display: grid; gap: 0; list-style: none; margin: 0; padding: 0; border-left: 2px solid var(--line); }
+  .timeline li { position: relative; padding: 0 0 34px 32px; }
+  .timeline li:last-child { padding-bottom: 0; }
+  .timeline li::before {
+    content: ""; position: absolute; left: -8px; top: 6px; width: 14px; height: 14px; border-radius: 50%;
+    background: var(--night); border: 2px solid var(--ice); box-shadow: 0 0 12px var(--ice);
+  }
+  .timeline .when { font-family: var(--mono); font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--ice); }
+  .timeline h3 { font-size: 24px; margin: 4px 0 6px; }
+  .timeline p { margin: 0; max-width: 60ch; }
+
+  /* Media frames — empty spots for photos / videos */
+  .grid { display: grid; gap: 20px; grid-template-columns: repeat(3, 1fr); }
+  .grid.two { grid-template-columns: repeat(2, 1fr); }
+  .card { display: grid; gap: 12px; transition: transform .25s; }
+  .card:hover { transform: translateY(-4px); }
+  .frame {
+    position: relative; aspect-ratio: 4 / 3; max-width: 100%;
+    border: 2px dashed var(--line); border-radius: 10px; overflow: hidden;
+    background:
+      radial-gradient(circle at 30% 20%, rgba(127,211,255,.08), transparent 60%),
+      var(--deep);
+    display: grid; place-items: center; text-align: center;
+    transition: border-color .25s, box-shadow .25s;
+  }
+  .frame.wide { aspect-ratio: 16 / 9; }
+  .frame.square { aspect-ratio: 1 / 1; }
+  .card:hover .frame { border-color: var(--ice); box-shadow: 0 0 0 4px rgba(127,211,255,.08), 0 18px 40px -18px rgba(127,211,255,.6); }
+  .frame .ph { font-family: var(--mono); font-size: 13px; color: var(--muted); letter-spacing: .08em; padding: 12px; }
+  .frame .ph b { display: block; font-family: var(--display); font-size: 16px; color: var(--text); margin-bottom: 4px; letter-spacing: .04em; }
+  .frame img, .frame video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .frame.photo { border-style: solid; }
+  .frame.light { background: #ffffff; }
+  .frame img.contain { object-fit: contain; padding: 8px; }
+  .card:hover .frame.photo img { transform: scale(1.04); }
+  .frame img { transition: transform .5s ease; }
+  .card h3 { font-size: 20px; }
+  .feature-wrap { max-width: 960px; }
+  .card.feature .frame { background: #000; }
+  .card.feature video { object-fit: contain; }
+  .card.feature h3 { font-size: clamp(24px, 3vw, 32px); }
+  .card.feature p { font-size: 17px; color: var(--text); max-width: 65ch; }
+  .card.feature:hover { transform: none; }
+  .card p { margin: 0; font-size: 15px; color: var(--muted); }
+
+  /* Interests */
+  .skills { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .skill {
+    padding: 22px; border: 1px solid var(--line); border-radius: 10px; background: var(--deep);
+    transition: border-color .25s, transform .25s;
+  }
+  .skill:hover { border-color: var(--ice); transform: translateY(-4px); }
+  .skill .icon { width: 36px; height: 36px; color: var(--ice); }
+  .skill h3 { font-size: 19px; margin: 14px 0 6px; }
+  .skill p { margin: 0; font-size: 15px; }
+
+  /* Contact */
+  .contact { text-align: left; }
+  .contact-box {
+    display: grid; gap: 20px; padding: 40px; border-radius: 14px; border: 1px solid var(--line);
+    background: linear-gradient(135deg, var(--deep), #0a2446);
+  }
+  .contact-box h2 { font-size: clamp(32px, 5vw, 50px); }
+  .email-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .email { font-family: var(--mono); font-size: 17px; color: var(--frost); padding: 12px 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--night); user-select: all; }
+  footer { padding-block: 32px; font-family: var(--mono); font-size: 13px; color: var(--muted); }
+
+  /* ============ SCROLL-IN ANIMATION ============ */
+  .reveal.pending { opacity: 0; transform: translateY(36px); }
+  .reveal { transition: opacity .8s ease, transform .8s cubic-bezier(.2,.7,.2,1); }
+  .reveal.from-left.pending { transform: translateX(-48px); }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal, .reveal.pending { opacity: 1; transform: none; transition: none; }
+    .btn, .card, .skill { transition: none; }
+    html { scroll-behavior: auto; }
+  }
+
+  /* ============ PHONE LAYOUT ============ */
+  @media (max-width: 900px) {
+    .grid, .skills { grid-template-columns: repeat(2, 1fr); }
+    .facts { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 680px) {
+    .menu-btn { display: block; }
+    .menu {
+      position: absolute; top: 64px; left: 0; right: 0; flex-direction: column; gap: 0;
+      background: var(--night); border-bottom: 1px solid var(--line); padding: 8px 20px 16px;
+    }
+    .menu[hidden] { display: none !important; }
+    .menu a { padding: 14px 8px; border-bottom: 1px solid var(--line); border-radius: 0; }
+    .grid, .grid.two, .skills { grid-template-columns: 1fr; }
+    .hero { padding-block: 64px 56px; }
+    section { padding-block: 64px; }
+    .contact-box { padding: 28px 20px; }
+    .email { font-size: 14px; overflow-wrap: anywhere; max-width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+
+<!-- ================= TOP MENU ================= -->
+<nav class="nav">
+  <div class="wrap">
+    <a class="logo" href="#home">JEFF<span>REY</span></a>
+    <button class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="menu">Menu</button>
+    <ul class="menu" id="menu">
+      <li><a href="#story">Story</a></li>
+      <li><a href="#editing">Editing</a></li>
+      <li><a href="#sports">Sports</a></li>
+      <li><a href="#art">Media Arts</a></li>
+      <li><a href="#interests">Interests</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ================= HERO / HOME ================= -->
+<header class="hero" id="home">
+  <div class="rink" aria-hidden="true"></div>
+  <canvas id="snow" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div class="tag">EDM → YVR · Hockey · Video Editor</div>
+    <h1>Jeffrey</h1>
+    <p class="lead">Born on Alberta ice. Raised on the West Coast. Always creating.</p>
+    <p class="sub">Hi, I'm Jeffrey. I was born in Edmonton, Alberta, and I've lived in Vancouver since I was four. I play hockey for the St. George's School team, and I play a lot of other sports too. When I'm not playing, I'm editing videos. I like taking ordinary clips and turning them into something that feels exciting to watch.</p>
+    <p class="sub">I also use AI to build websites and spend plenty of time building in Minecraft. This site is my story so far and the work I'm proud of. If you want a video edited, or you just want to know more about me, you're in the right place.</p>
+    <div class="cta">
+      <a class="btn btn-primary" href="#editing">See my edits</a>
+      <a class="btn btn-ghost" href="#story">Read my story</a>
+    </div>
+    <dl class="facts">
+      <div class="fact"><dt>Born</dt><dd>Edmonton, AB</dd></div>
+      <div class="fact"><dt>Home</dt><dd>Vancouver, BC</dd></div>
+      <div class="fact"><dt>Team</dt><dd>St. George's Hockey</dd></div>
+      <div class="fact"><dt>Creates</dt><dd>Video edits</dd></div>
+    </dl>
+  </div>
+</header>
+
+<main>
+  <!-- ================= STORY ================= -->
+  <section id="story">
+    <div class="wrap">
+      <div class="head reveal">
+        <span class="tag">My story</span>
+        <h2>From Edmonton to Vancouver</h2>
+        <p>Two cities, one sport I love, and a lot of time spent creating. These are the moments that made me who I am.</p>
+      </div>
+      <ol class="timeline">
+        <li class="reveal from-left">
+          <div class="when">The start</div>
+          <h3>Born in Edmonton, Alberta</h3>
+          <p>I was born in Edmonton, a city where winter lasts a long time and hockey is part of everyday life. Outdoor rinks, cold mornings and hockey on TV are part of what Edmonton is known for, and that's where my story begins.</p>
+        </li>
+        <li class="reveal from-left">
+          <div class="when">Age 4</div>
+          <h3>Moved to Vancouver</h3>
+          <p>When I was four, my family moved across the Rockies to Vancouver. Everything was new: a new city, new friends, the ocean and the mountains. Vancouver has been home ever since, but I never lost my love of winter and the ice.</p>
+        </li>
+        <li class="reveal from-left">
+          <div class="when">On the ice</div>
+          <h3>Joined the St. George's School hockey team</h3>
+          <p>Hockey is my main sport, and making the St. George's School team was a big moment for me. Playing on a team taught me to work hard in practice, stay focused when a game gets tough, and play for the people beside me. I play lots of other sports too, because I just like competing and staying active.</p>
+        </li>
+        <li class="reveal from-left">
+          <div class="when">Behind the screen</div>
+          <h3>Started editing videos</h3>
+          <p>Video editing started as a hobby and turned into something I really care about. I like finding the best moments in a clip, cutting them to the right beat, and adding effects that make people want to watch again. Sports gave me a lot to edit, and editing helped me see the game in a new way.</p>
+        </li>
+        <li class="reveal from-left">
+          <div class="when">Now</div>
+          <h3>Editing, building, creating</h3>
+          <p>Today I'm still playing hockey, still editing, and always trying something new. I use AI to design and build websites like this one, and I build worlds in Minecraft. What I'm aiming for is always the same: make something people will remember.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ================= VIDEO EDITING ================= -->
+  <section id="editing">
+    <div class="wrap">
+      <div class="head reveal">
+        <span class="tag">Video editing</span>
+        <h2>My edits</h2>
+        <p>Need a video edited? Here's one I've made. I edit highlights, montages and short stories, and I pay attention to timing, music and transitions so every edit feels big.</p>
+        <p>I can edit sports highlight reels, game-day recaps, gaming clips and personal videos. Send me your raw footage, tell me the vibe you want, and I'll turn it into something worth sharing.</p>
+      </div>
+      <div class="feature-wrap">
+        <article class="card feature reveal">
+          <div class="frame wide photo">
+            <video src="videos/meteo-adelie.mp4" poster="images/video-meteo-poster.jpg" controls preload="metadata" playsinline></video>
+          </div>
+          <h3>La météo à Adélie, Antarctique</h3>
+          <p>A French weather report from Dumont d'Urville station in Adélie Land, Antarctica, made with Simon. I filmed in front of a green screen, keyed in an Antarctic background, and added forecast graphics and subtitles.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SPORTS ================= -->
+  <section id="sports">
+    <div class="wrap">
+      <div class="head reveal">
+        <span class="tag">Sports</span>
+        <h2>On the ice and beyond</h2>
+        <p>Hockey with St. George's is where I spend most of my time, but I play many other sports too. Sports taught me teamwork, discipline and how to keep going after a bad shift. They also give me some of my favourite footage to edit.</p>
+      </div>
+      <div class="grid">
+        <article class="card reveal">
+          <div class="frame photo"><img src="images/hockey-1.jpg" alt="Jeffrey in his white St. George's jersey, number 94, looking up the ice" style="object-position: 60% 25%;"></div>
+          <h3>Game face</h3>
+          <p>Wearing #94 for St. George's in a CSSHL game.</p>
+        </article>
+        <article class="card reveal">
+          <div class="frame photo"><img src="images/hockey-2.jpg" alt="Jeffrey skating toward the puck in a red St. George's uniform"></div>
+          <h3>Chasing the puck</h3>
+          <p>Low, fast and eyes on the puck in the red St. George's kit.</p>
+        </article>
+        <article class="card reveal">
+          <div class="frame photo"><img src="images/hockey-3.jpg" alt="Jeffrey carrying the puck along the boards with an opponent nearby" style="object-position: 40% 50%;"></div>
+          <h3>Along the boards</h3>
+          <p>Carrying the puck and reading the play before making a move.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= MEDIA ARTS ================= -->
+  <section id="art">
+    <div class="wrap">
+      <div class="head reveal">
+        <span class="tag">Media arts</span>
+        <h2>Art projects</h2>
+        <p>Projects from my media arts work. Media arts is where I get to try out ideas with images, video and design. Each project taught me something new about how to tell a story visually.</p>
+      </div>
+      <div class="grid">
+        <article class="card reveal">
+          <div class="frame square photo">
+            <img src="images/art-red-design.jpg" alt="Symmetrical red digital artwork of glowing squares, circles and triangles arranged around a spiral centre">
+          </div>
+          <h3>Red symmetry</h3>
+          <p>A digital artwork made in Photoshop. Glowing squares, circles and triangles are arranged in a perfect circle around a spiral pattern in the centre, all in shades of red and black.</p>
+        </article>
+        <article class="card reveal">
+          <div class="frame square photo light"><img src="images/art-tshirt.jpg" alt="White T-shirt design with an LM monogram on the front and a large crescent moon on the back" class="contain"></div>
+          <h3>"LM" moon T-shirt</h3>
+          <p>A clothing design with a script "LM" monogram on the front. The back has a big silver crescent moon with the line "You're not where you left yourself." written along its curve.</p>
+        </article>
+        <article class="card reveal">
+          <div class="frame square photo"><img src="images/art-skyline.jpg" alt="Sun rays bursting from behind clouds over a city skyline and water" style="object-position: 50% 60%;"></div>
+          <h3>Light over the city</h3>
+          <p>A skyline photo where sunbeams break out from behind the clouds. The cool blue tones make the sky feel calm and dramatic at the same time.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= INTERESTS ================= -->
+  <section id="interests">
+    <div class="wrap">
+      <div class="head reveal">
+        <span class="tag">Interests</span>
+        <h2>What I'm into</h2>
+        <p>These are the things I spend my time on and keep getting better at.</p>
+      </div>
+      <div class="skills">
+        <div class="skill reveal">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 3l6 12h7a3 3 0 0 1 0 6H3"/><path d="M14 21h0"/></svg>
+          <h3>Hockey</h3>
+          <p>My main sport. I play for the St. George's School team and love the speed, the teamwork and the feeling of a big win.</p>
+        </div>
+        <div class="skill reveal">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg>
+          <h3>Lots of sports</h3>
+          <p>If there's a game going, I'm probably in it. Playing different sports keeps me fit and makes me a better all-round athlete.</p>
+        </div>
+        <div class="skill reveal">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 9l5 3-5 3z"/></svg>
+          <h3>Video editing</h3>
+          <p>My favourite hobby. I cut raw clips into edits with good timing, music and effects that feel big and exciting.</p>
+        </div>
+        <div class="skill reveal">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7l9-4 9 4-9 4z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg>
+          <h3>Minecraft & AI sites</h3>
+          <p>I build worlds in Minecraft and use AI to design and build websites, like the one you're looking at.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CONTACT ================= -->
+  <section id="contact" class="contact">
+    <div class="wrap">
+      <div class="contact-box reveal">
+        <span class="tag">Contact</span>
+        <h2>Want a video edited?</h2>
+        <p>Send me an email with what you need: the type of video, how long it should be, and the style you're going for. If you have questions about my story, or just want to say hi, reach out anytime. I'll get back to you as soon as I can.</p>
+        <div class="email-row">
+          <span class="email" id="email">jeffrey.yang29@stgeorges.bc.ca</span>
+          <button class="btn btn-primary" id="copy" type="button">Copy email</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">© 2026 Jeffrey · Edmonton → Vancouver</div>
+</footer>
+
+<script>
+  // ---- Mobile menu ----
+  const menu = document.getElementById('menu');
+  const menuBtn = document.getElementById('menu-btn');
+  const phone = window.matchMedia('(max-width: 680px)');
+  function setMenu() { menu.hidden = phone.matches; menuBtn.setAttribute('aria-expanded', 'false'); menuBtn.textContent = 'Menu'; }
+  setMenu();
+  phone.addEventListener('change', setMenu);
+  menuBtn.addEventListener('click', () => {
+    menu.hidden = !menu.hidden;
+    menuBtn.setAttribute('aria-expanded', String(!menu.hidden));
+    menuBtn.textContent = menu.hidden ? 'Menu' : 'Close';
+  });
+  menu.addEventListener('click', e => { if (e.target.tagName === 'A' && phone.matches) setMenu(); });
+
+  // ---- Highlight the menu link for the section on screen ----
+  const links = [...menu.querySelectorAll('a')];
+  const sections = links.map(a => document.querySelector(a.getAttribute('href')));
+  if ('IntersectionObserver' in window) {
+    const spy = new IntersectionObserver(entries => {
+      entries.forEach(en => {
+        if (en.isIntersecting) links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + en.target.id));
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    sections.forEach(s => s && spy.observe(s));
+  }
+
+  // ---- Text slides in as you scroll (only things below the first screen) ----
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduce && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(en => {
+        if (en.isIntersecting) { en.target.classList.remove('pending'); io.unobserve(en.target); }
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.reveal').forEach((el, i) => {
+      if (el.getBoundingClientRect().top > window.innerHeight) {
+        el.classList.add('pending');
+        el.style.transitionDelay = (i % 3) * 90 + 'ms';
+        io.observe(el);
+      }
+    });
+  }
+
+  // ---- Copy email button ----
+  const copyBtn = document.getElementById('copy');
+  copyBtn.addEventListener('click', () => {
+    const text = document.getElementById('email').textContent;
+    const done = () => { copyBtn.textContent = 'Copied'; setTimeout(() => copyBtn.textContent = 'Copy email', 1800); };
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(done).catch(selectIt);
+    } else selectIt();
+    function selectIt() {
+      const r = document.createRange(); r.selectNodeContents(document.getElementById('email'));
+      const s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+    }
+  });
+
+  // ---- Falling snow in the hero ----
+  const canvas = document.getElementById('snow');
+  const ctx = canvas.getContext('2d');
+  let flakes = [], w, h;
+  function size() {
+    const dpr = window.devicePixelRatio || 1;
+    w = canvas.offsetWidth; h = canvas.offsetHeight;
+    canvas.width = w * dpr; canvas.height = h * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const count = Math.round(w / 12);
+    flakes = Array.from({ length: count }, () => ({
+      x: Math.random() * w, y: Math.random() * h, r: Math.random() * 2.2 + 0.6,
+      s: Math.random() * 0.6 + 0.25, d: Math.random() * 0.6 - 0.3
+    }));
+  }
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = 'rgba(234, 246, 255, 0.8)';
+    for (const f of flakes) {
+      ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2); ctx.fill();
+      if (!reduce) {
+        f.y += f.s; f.x += f.d;
+        if (f.y > h) { f.y = -4; f.x = Math.random() * w; }
+        if (f.x > w) f.x = 0; if (f.x < 0) f.x = w;
+      }
+    }
+    if (!reduce) requestAnimationFrame(draw);
+  }
+  size(); draw();
+  window.addEventListener('resize', size);
+</script>
+
+</body>
+</html>
