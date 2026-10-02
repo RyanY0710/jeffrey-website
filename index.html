@@ -61,6 +61,24 @@
     font: 700 14px var(--body); letter-spacing: .1em; text-transform: uppercase; padding: 10px 16px;
   }
 
+
+  /* ============ MUSIC BUTTON ============ */
+  .nav-left { display: flex; align-items: center; gap: 14px; }
+  .music-btn {
+    display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 14px 0 12px;
+    background: transparent; color: var(--white); border: 2px solid var(--line); border-radius: 999px; cursor: pointer;
+    font: 700 13px var(--body); letter-spacing: .1em; text-transform: uppercase; transition: border-color .2s, background .2s;
+  }
+  .music-btn:hover { border-color: var(--red); }
+  .music-btn.on { background: var(--red); border-color: var(--red); }
+  .bars { display: inline-flex; align-items: flex-end; gap: 2px; height: 14px; }
+  .bars i { width: 3px; height: 4px; background: currentColor; border-radius: 1px; }
+  .music-btn.on .bars i { animation: eq .9s ease-in-out infinite; }
+  .music-btn.on .bars i:nth-child(2) { animation-delay: .2s; }
+  .music-btn.on .bars i:nth-child(3) { animation-delay: .4s; }
+  @keyframes eq { 0%,100% { height: 4px; } 50% { height: 14px; } }
+  @media (prefers-reduced-motion: reduce) { .music-btn.on .bars i { animation: none; height: 10px; } }
+
   /* ============ HERO (big photo) ============ */
   .hero { position: relative; overflow: hidden; min-height: 680px; display: flex; align-items: flex-end; }
   .hero-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 65% 25%; }
@@ -170,6 +188,8 @@
   }
   @media (max-width: 680px) {
     .menu-btn { display: block; }
+    .music-label { display: none; }
+    .music-btn { padding: 0 12px; }
     .menu {
       position: absolute; top: 68px; left: 0; right: 0; flex-direction: column; gap: 0;
       background: var(--black); border-bottom: 2px solid var(--red); padding: 8px 24px 16px;
@@ -192,7 +212,14 @@
 <!-- ================= TOP MENU ================= -->
 <nav class="nav">
   <div class="wrap">
-    <a class="logo" href="#home">JY<span>94</span></a>
+    <div class="nav-left">
+      <a class="logo" href="#home">JY<span>94</span></a>
+      <button class="music-btn" id="music-btn" type="button" aria-pressed="false" aria-label="Play background music">
+        <span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="music-label">Music off</span>
+      </button>
+      <audio id="bg-music" src="chill-lofi.mp3" loop preload="none"></audio>
+    </div>
     <button class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="menu">Menu</button>
     <ul class="menu" id="menu">
       <li><a href="#story">Story</a></li>
@@ -450,6 +477,26 @@
       }
     });
   }
+
+
+  // ---- Background music button ----
+  const music = document.getElementById('bg-music');
+  const musicBtn = document.getElementById('music-btn');
+  const musicLabel = musicBtn.querySelector('.music-label');
+  music.volume = 0.35;
+  function showMusic(on) {
+    musicBtn.classList.toggle('on', on);
+    musicBtn.setAttribute('aria-pressed', String(on));
+    musicBtn.setAttribute('aria-label', on ? 'Pause background music' : 'Play background music');
+    musicLabel.textContent = on ? 'Music on' : 'Music off';
+  }
+  musicBtn.addEventListener('click', () => {
+    if (music.paused) music.play().then(() => showMusic(true)).catch(() => showMusic(false));
+    else { music.pause(); showMusic(false); }
+  });
+  // pause the music while Jeffrey's video is playing
+  const editVideo = document.querySelector('#editing video');
+  if (editVideo) editVideo.addEventListener('play', () => { if (!music.paused) { music.pause(); showMusic(false); } });
 
   // ---- Copy email button ----
   const copyBtn = document.getElementById('copy');
